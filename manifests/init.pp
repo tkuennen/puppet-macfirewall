@@ -17,11 +17,16 @@
 
 define macfirewall ($action = 'string', $value = 'string') {
 
+  # Works only on Darwin
+  if $facts['os']['name'] != 'Darwin' {
+    fail('The macbluetooth resource type is only supported on macOS')
+ }
+
   # Commands for interpolation / shorthand
   $cmd = '/usr/libexec/ApplicationFirewall/socketfilterfw'
+  $gatekeeper = '/usr/sbin/spctl'
   $grep = '/usr/bin/grep'
 
-  # Only works on Darwin
   case $::operatingsystem {
     'Darwin': {
 
@@ -92,13 +97,15 @@ define macfirewall ($action = 'string', $value = 'string') {
           } # end exec
         } # end signedapps
 
+        'gatekeeper': {
+          exec { "${gatekeeper} --master-enable":
+            command       => "${gatekeeper} --master-${value}",
+            logoutput     => true,
+            unless        => "${gatekeeper} --status | ${grep} --master-${value}",
+          } # end exec
+        } # end gatekeeper
+        
       } # end case $action
     } # end case $::operatingsystem
-
-    default: {
-      # fail if not macOS
-    } # end default
-
   } # end case Darwin
-  
 } # end define
