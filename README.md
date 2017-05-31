@@ -22,9 +22,11 @@ I use r10k for managing my Puppet modules.
 
 Add this to your Puppetfile:
 
+```
 mod 'puppet-macfirewall',
   :git    => 'https://github.com/avantgardefuselage/puppet-macfirewall.git',
   :commit => 'COMMIT_NUMBER'
+```
 
 ## Usage
 
