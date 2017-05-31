@@ -98,13 +98,13 @@ define macfirewall ($action = 'string', $value = 'string') {
         } # end signedapps
 
         'gatekeeper': {
-          exec { "${gatekeeper} --master-enable":
+          exec { "${gatekeeper} --master-${value}":
             command       => "${gatekeeper} --master-${value}",
             logoutput     => true,
             unless        => "${gatekeeper} --status | ${grep} --master-${value}",
           } # end exec
         } # end gatekeeper
-        
+
       } # end case $action
     } # end case $::operatingsystem
   } # end case Darwin
