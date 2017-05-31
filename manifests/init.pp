@@ -104,12 +104,13 @@ define macfirewall ($action = 'string', $value = 'string') {
             unless    => "${gatekeeper} --status | ${grep} --master-${value}",
           } # end exec
         } # end gatekeeper
-
-        default:
+        default: {
           fail('The action used is not defined. Please use a defined action.')
+        }
       } # end case $action
     } # end case $::operatingsystem
-    default:
+    default: {
       fail('The macfirewall can only be used on macOS.')
+    }
   } # end case Darwin
 } # end define
