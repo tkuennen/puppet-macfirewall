@@ -19,8 +19,8 @@ define macfirewall ($action = 'string', $value = 'string') {
 
   # Works only on Darwin
   if $facts['os']['name'] != 'Darwin' {
-    fail('The macbluetooth resource type is only supported on macOS')
- }
+    fail('The macfirewall resource type is only supported on macOS')
+  }
 
   # Commands for interpolation / shorthand
   $cmd = '/usr/libexec/ApplicationFirewall/socketfilterfw'
@@ -34,69 +34,75 @@ define macfirewall ($action = 'string', $value = 'string') {
 
         'add': {
           exec { "${cmd} --add ${value}":
-            command       => "${cmd} --add ${value}",
-            logoutput     => true,
-            unless        => "${cmd} --listapps | ${grep} ${value}",
+            command   => "${cmd} --add ${value}",
+            logoutput => true,
+            unless    => "${cmd} --listapps | ${grep} ${value}",
           } # end exec
         } # end add
 
         'block': {
           exec { "${cmd} --blockapp ${value}":
-            command       => "${cmd} --blockapp ${value}",
-            logoutput     => true,
-            onlyif        => "${cmd} --listapps | ${grep} ${value}",
+            command   => "${cmd} --blockapp ${value}",
+            logoutput => true,
+            onlyif    => "${cmd} --listapps | ${grep} ${value}",
           } # end exec
         } # end block
 
         'remove': {
           exec { "${cmd} --remove ${value}":
-            command       => "${cmd} --remove ${value}",
-            logoutput     => true,
-            onlyif        => "${cmd} --listapps | ${grep} ${value}",
+            command   => "${cmd} --remove ${value}",
+            logoutput => true,
+            onlyif    => "${cmd} --listapps | ${grep} ${value}",
           } # end exec
         } # End remove
 
         'stealth': {
           exec { "${cmd} --setstealthmode ${value}":
-            command       => "${cmd} --setstealthmode ${value}",
-            logoutput     => true,
-            unless        => "${cmd} --getstealthmode | ${grep} ${value}",
+            command   => "${cmd} --setstealthmode ${value}",
+            logoutput => true,
+            unless    => "${cmd} --getstealthmode | ${grep} ${value}",
           } # end exec
         } # end stealth
 
         'globalstate': {
           exec { "${cmd} --setglobalstate ${value}":
-            command       => "${cmd} --setglobalstate ${value}",
-            logoutput     => true,
-            unless        => "${cmd} --getglobalstate | ${grep} ${value}",
+            command   => "${cmd} --setglobalstate ${value}",
+            logoutput => true,
+            unless    => "${cmd} --getglobalstate | ${grep} ${value}",
           } # end exec
         } # end globalstate
 
         'logging': {
           exec { "${cmd} --setloggingmode ${value}":
-            command       => "${cmd} --setloggingmode ${value}",
-            logoutput     => true,
-            unless        => "${cmd} --getloggingmode | ${grep} ${value}",
+            command   => "${cmd} --setloggingmode ${value}",
+            logoutput => true,
+            unless    => "${cmd} --getloggingmode | ${grep} ${value}",
           } # end exec
         } # end logging
 
         'signed': {
           exec { "${cmd} --setallowsigned ${value}":
-            command       => "${cmd} --setallowsigned ${value}",
-            logoutput     => true,
-            unless        => "${cmd} --getallowsigned | ${grep} ${value}",
+            command   => "${cmd} --setallowsigned ${value}",
+            logoutput => true,
+            unless    => "${cmd} --getallowsigned | ${grep} ${value}",
           } # end exec
         } # end signed
 
         'signedapps': {
           exec { "${cmd} --setallowsignedapp ${value}":
-            command       => "${cmd} --setallowsignedapp ${value}",
-            logoutput     => true,
-            unless        => "${cmd} --getallowsigned | ${grep} ${value}",
+            command   => "${cmd} --setallowsignedapp ${value}",
+            logoutput => true,
+            unless    => "${cmd} --getallowsigned | ${grep} ${value}",
           } # end exec
         } # end signedapps
 
+        default: {
+          fail('The action used is not defined. Please use a defined action.')
+        }
       } # end case $action
     } # end case $::operatingsystem
+    default: {
+      fail('The macfirewall can only be used on macOS.')
+    }
   } # end case Darwin
 } # end define
