@@ -24,7 +24,6 @@ define macfirewall ($action = 'string', $value = 'string') {
 
   # Commands for interpolation / shorthand
   $cmd = '/usr/libexec/ApplicationFirewall/socketfilterfw'
-  $gatekeeper = '/usr/sbin/spctl'
   $grep = '/usr/bin/grep'
 
   case $::operatingsystem {
@@ -96,14 +95,6 @@ define macfirewall ($action = 'string', $value = 'string') {
             unless        => "${cmd} --getallowsigned | ${grep} ${value}",
           } # end exec
         } # end signedapps
-
-        'gatekeeper': {
-          exec { "${gatekeeper} --master-${value}":
-            command       => "${gatekeeper} --master-${value}",
-            logoutput     => true,
-            unless        => "${gatekeeper} --status | ${grep} --master-${value}",
-          } # end exec
-        } # end gatekeeper
 
       } # end case $action
     } # end case $::operatingsystem
