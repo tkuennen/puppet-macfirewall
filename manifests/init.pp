@@ -96,6 +96,14 @@ define macfirewall ($action = 'string', $value = 'string', $output = false) {
           } # end exec
         } # end signedapps
 
+        'blockall': {
+          exec { "${cmd} --setblockall ${value}":
+            command   => "${cmd} --setblockall ${value}",
+            logoutput => $output,
+            unless    => "${cmd} --getblockall | ${grep} ${value}",
+          } # end exec
+        } # end blockall
+
         default: {
           fail('The action used is not defined. Please use a defined action.')
         }
