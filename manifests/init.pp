@@ -15,7 +15,7 @@
 #   }
 #
 
-define macfirewall ($action = 'string', $value = 'string') {
+define macfirewall ($action = 'string', $value = 'string', $output = false) {
 
   # Works only on Darwin
   if $facts['os']['name'] != 'Darwin' {
@@ -35,7 +35,7 @@ define macfirewall ($action = 'string', $value = 'string') {
         'add': {
           exec { "${cmd} --add ${value}":
             command   => "${cmd} --add ${value}",
-            logoutput => true,
+            logoutput => $output,
             unless    => "${cmd} --listapps | ${grep} ${value}",
           } # end exec
         } # end add
@@ -43,7 +43,7 @@ define macfirewall ($action = 'string', $value = 'string') {
         'block': {
           exec { "${cmd} --blockapp ${value}":
             command   => "${cmd} --blockapp ${value}",
-            logoutput => true,
+            logoutput => $output,
             onlyif    => "${cmd} --listapps | ${grep} ${value}",
           } # end exec
         } # end block
@@ -51,7 +51,7 @@ define macfirewall ($action = 'string', $value = 'string') {
         'remove': {
           exec { "${cmd} --remove ${value}":
             command   => "${cmd} --remove ${value}",
-            logoutput => true,
+            logoutput => $output,
             onlyif    => "${cmd} --listapps | ${grep} ${value}",
           } # end exec
         } # End remove
@@ -59,7 +59,7 @@ define macfirewall ($action = 'string', $value = 'string') {
         'stealth': {
           exec { "${cmd} --setstealthmode ${value}":
             command   => "${cmd} --setstealthmode ${value}",
-            logoutput => true,
+            logoutput => $output,
             unless    => "${cmd} --getstealthmode | ${grep} ${value}",
           } # end exec
         } # end stealth
@@ -67,7 +67,7 @@ define macfirewall ($action = 'string', $value = 'string') {
         'globalstate': {
           exec { "${cmd} --setglobalstate ${value}":
             command   => "${cmd} --setglobalstate ${value}",
-            logoutput => true,
+            logoutput => $output,
             unless    => "${cmd} --getglobalstate | ${grep} ${value}",
           } # end exec
         } # end globalstate
@@ -75,7 +75,7 @@ define macfirewall ($action = 'string', $value = 'string') {
         'logging': {
           exec { "${cmd} --setloggingmode ${value}":
             command   => "${cmd} --setloggingmode ${value}",
-            logoutput => true,
+            logoutput => $output,
             unless    => "${cmd} --getloggingmode | ${grep} ${value}",
           } # end exec
         } # end logging
@@ -83,7 +83,7 @@ define macfirewall ($action = 'string', $value = 'string') {
         'signed': {
           exec { "${cmd} --setallowsigned ${value}":
             command   => "${cmd} --setallowsigned ${value}",
-            logoutput => true,
+            logoutput => $output,
             unless    => "${cmd} --getallowsigned | ${grep} ${value}",
           } # end exec
         } # end signed
@@ -91,7 +91,7 @@ define macfirewall ($action = 'string', $value = 'string') {
         'signedapps': {
           exec { "${cmd} --setallowsignedapp ${value}":
             command   => "${cmd} --setallowsignedapp ${value}",
-            logoutput => true,
+            logoutput => $output,
             unless    => "${cmd} --getallowsigned | ${grep} ${value}",
           } # end exec
         } # end signedapps
